@@ -42,7 +42,7 @@ def solveactividad(Eopt, beta, gamma, kr, e0):
     resolucion=scipy.optimize.fsolve(eactividad,x0,args=(beta, gamma, kr, e0, Eopt))
     return resolucion;
 
-def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta):
+def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit):
     e0_st=np.zeros(nlotes+1,dtype=float);
     betat=np.zeros(nlotes+1,dtype=float);
     e_ref_actividad=np.zeros(nlotes+1,dtype=float);
@@ -74,16 +74,16 @@ def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbe
                betat[i]=0;
         if i>=1:
            t_reaccion[i] = solvereactor(Xopt, Si, km, kcat, kd, e_ref_actividad[i-1]);
-           e0_st[i]=e_ref_actividad[i-1]*np.exp(-kd*t_reaccion[i]);
-           Gamma[i]=e0_st[i]/e_ref_actividad[i-1];
-           Eopt=e0*(0.95)*(0.95-0.1*(i-1));
-           e_ref_actividad[i]=Eopt;
-           t_reactivacion[i]=solveactividad(e_ref_actividad[i], betat[i], Gamma[i], kr, e0);
-           tiempo=tiempo+ t_reaccion[i]+t_reactivacion[i-1];
-           X[i]=Xopt;
-           V[i]=V0;
-           product[i]=product[i-1]+(((Si*V[i]*X[i])/Mcat));
-           productivity_specif[i]=product[i]/tiempo;
+           if t_reaccion[i]>0:
+              e0_st[i]=e_ref_actividad[i-1]*np.exp(-kd*t_reaccion[i]);
+              Gamma[i]=e0_st[i]/e_ref_actividad[i-1];
+              e_ref_actividad[i]=xlimit*e0_st[0]*betat[i];
+              t_reactivacion[i]=solveactividad(e_ref_actividad[i], betat[i], Gamma[i], kr, e0_st[0]);
+              tiempo=tiempo+ t_reaccion[i]+t_reactivacion[i-1];
+              X[i]=Xopt;
+              V[i]=V0;
+              product[i]=(((Si*V[i]*X[i])/Mcat));
+              productivity_specif[i]=product[i]/(t_reaccion[i]+t_reactivacion[i-1]);
        
     Productividad_especifica_global=sum(product)/(tiempo);
     return e0_st, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, productivity_specif, Productividad_especifica_global;
@@ -113,14 +113,15 @@ def reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat):
                tiempo=tiempo+ t_reaccion[i];
                X[i]=Xopt;
                V[i]=V0;
-               product[i]=product[i-1]+(((Si*V[i]*X[i])/Mcat));
-               productivity_specif[i]=product[i]/tiempo;
+               #product[i-1]+
+               product[i]=(((Si*V[i]*X[i])/Mcat));
+               productivity_specif[i]=product[i]/t_reaccion[i];
            else:
                e0_st[i]=0;
                tiempo=tiempo;
                X[i]=0;
                V[i]=0;
-               product[i]=product[i-1];
+               product[i]=0;
                productivity_specif[i]=0;
        
     Productividad_especifica_global=sum(product)/(tiempo);
