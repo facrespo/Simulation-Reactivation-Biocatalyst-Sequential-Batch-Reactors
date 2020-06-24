@@ -21,8 +21,9 @@ V0=1;
 Mcat=1;
 dbeta=0.1;
 xlimit=0.95;
+elimit=0.25;
 
-e0_st, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, Productividad, Productividadr = reactorbioquim.reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit);
+e0_st, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, Productividad, Productividadr = reactorbioquim.reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit, elimit);
 
 print('Producto',product);
 print('Productividad reacción',Productividad);

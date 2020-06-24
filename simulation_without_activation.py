@@ -18,8 +18,9 @@ nlotes=6;
 kr=0.5;
 V0=1;
 Mcat=1;
+elimit=0.25
 
-e0_st, t_reaccion, product, productivity_specif, Productividad_especifica_global = reactorbioquim.reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat);
+e0_st, t_reaccion, product, productivity_specif, Productividad_especifica_global = reactorbioquim.reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat, elimit);
 
 print('Producto',product);
 print('Productividad reacción',productivity_specif);
