@@ -42,7 +42,7 @@ def solveactividad(Eopt, beta, gamma, kr, e0):
     resolucion=scipy.optimize.fsolve(eactividad,x0,args=(beta, gamma, kr, e0, Eopt))
     return resolucion;
 
-def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit):
+def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit, elimit):
     e0_st=np.zeros(nlotes+1,dtype=float);
     betat=np.zeros(nlotes+1,dtype=float);
     e_ref_actividad=np.zeros(nlotes+1,dtype=float);
@@ -68,11 +68,11 @@ def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbe
     Productividadr=0;
     for i in range(1,nlotes+1):
         en=e0;
-        if (i>=2):
+        if (i>=2) and (e0_st[i-1] >= elimit*e0_st[0]):
            betat[i]=betat[i-1]-dbeta;
            if (betat[i]<=0):
                betat[i]=0;
-        if i>=1:
+        if (i>=1) and (e0_st[i-1] >= elimit*e0_st[0]):
            t_reaccion[i] = solvereactor(Xopt, Si, km, kcat, kd, e_ref_actividad[i-1]);
            if t_reaccion[i]>0:
               e0_st[i]=e_ref_actividad[i-1]*np.exp(-kd*t_reaccion[i]);
@@ -88,7 +88,7 @@ def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbe
     Productividad_especifica_global=sum(product)/(tiempo);
     return e0_st, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, productivity_specif, Productividad_especifica_global;
 
-def reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat):
+def reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat, elimit):
     e0_st=np.zeros(nlotes+1,dtype=float);
     e_ref_actividad=np.zeros(nlotes+1,dtype=float);
     t_reaccion=np.zeros(nlotes+1,dtype=float);
@@ -106,7 +106,7 @@ def reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat):
     Productividadr=0;
     for i in range(1,nlotes+1):
         en=e0;
-        if i>=1:
+        if (i>=1) and (e0_st[i-1] >= elimit*e0_st[0]):
            t_reaccion[i] = solvereactor(Xopt, Si, km, kcat, kd, e0_st[i-1]);
            if t_reaccion[i]>0:
                e0_st[i]=e0_st[i-1]*np.exp(-kd*t_reaccion[i]);
