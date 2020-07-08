@@ -38,7 +38,7 @@ def solvereactor(Xopt, Si, km, kcat, kd, e0):
     return resolucion;
 
 def solveactividad(Eopt, beta, gamma, kr, e0):
-    x0=0;
+    x0=0.5;
     resolucion=scipy.optimize.fsolve(eactividad,x0,args=(beta, gamma, kr, e0, Eopt))
     return resolucion;
 
@@ -126,3 +126,47 @@ def reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat, elimit):
        
     Productividad_especifica_global=sum(product)/(tiempo);
     return e0_st, t_reaccion, product, productivity_specif, Productividad_especifica_global;
+
+def curva(km, kcat, kd, e0, Si, V0, Mcat):
+    Xopt=np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], dtype=float);
+    proyeccion=np.zeros((10,3),dtype=float);
+    proyeccion[0,0]=1;
+    for i in range(1,proyeccion.shape[0]):
+        proyeccion[i,0]=proyeccion[0,0]+i;
+        proyeccion[i,1]=Xopt[i-1];
+        proyeccion[i,2] = solvereactor(Xopt[i-1], Si, km, kcat, kd, e0);
+               
+    return proyeccion;
+
+def curva_activada(km, kcat, kd, e0, e0f, eref, Si, beta, kr, V0, Mcat, dbeta, nlote, xlimit, treact):
+    Xopt=np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], dtype=float);
+    proyeccion=np.zeros((10,4),dtype=float);
+    betat=np.zeros(nlote,dtype=float);
+    proyeccion[0,0]=1;
+    e_ref_actividad=np.zeros(10,dtype=float);
+    betat=np.zeros(nlote+1,dtype=float);
+    betat[0]=beta;
+    if (nlote>=1):
+       betat[1]=beta;
+    if (nlote>=2):
+       for i in range(2,nlote+1):
+           betat[i]=betat[i-1]-dbeta;
+           if (betat[i]<=0):
+               betat[i]=0;
+    for i in range(1,proyeccion.shape[0]):
+        proyeccion[i,0]=proyeccion[0,0]+i;
+        proyeccion[i,1]=Xopt[i-1];
+        t1 = solvereactor(Xopt[i-1], Si, km, kcat, kd, eref)[0];
+        e01=eref*np.exp(-kd*t1);
+        e_ref_a=xlimit*e0*betat[nlote];
+        Gamma=e01/eref;
+        t2=solveactividad(e_ref_a, betat[nlote], Gamma, kr, e0)[0];
+        if (t2<=0):
+            t2=0;
+        proyeccion[i,2]=t1;
+        proyeccion[i,3]=t2;
+               
+    return proyeccion;
+
+
+
