@@ -135,10 +135,10 @@ def curva(km, kcat, kd, e0, Si, V0, Mcat):
         proyeccion[i,0]=proyeccion[0,0]+i;
         proyeccion[i,1]=Xopt[i-1];
         proyeccion[i,2] = solvereactor(Xopt[i-1], Si, km, kcat, kd, e0);
-               
+                   
     return proyeccion;
 
-def curva_activada(km, kcat, kd, e0, e0f, eref, Si, beta, kr, V0, Mcat, dbeta, nlote, xlimit, treact):
+def curva_activada(km, kcat, kd, e0, e0f, eref, Si, beta, kr, V0, Mcat, dbeta, nlote, xlimit):
     Xopt=np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], dtype=float);
     proyeccion=np.zeros((10,4),dtype=float);
     betat=np.zeros(nlote,dtype=float);
@@ -154,15 +154,18 @@ def curva_activada(km, kcat, kd, e0, e0f, eref, Si, beta, kr, V0, Mcat, dbeta, n
            if (betat[i]<=0):
                betat[i]=0;
     for i in range(1,proyeccion.shape[0]):
+        t2=0;
         proyeccion[i,0]=proyeccion[0,0]+i;
         proyeccion[i,1]=Xopt[i-1];
         t1 = solvereactor(Xopt[i-1], Si, km, kcat, kd, eref)[0];
         e01=eref*np.exp(-kd*t1);
         e_ref_a=xlimit*e0*betat[nlote];
         Gamma=e01/eref;
-        t2=solveactividad(e_ref_a, betat[nlote], Gamma, kr, e0)[0];
-        if (t2<=0):
-            t2=0;
+        if (i==9):
+           print(Gamma)
+           t2=solveactividad(e_ref_a, betat[nlote], Gamma, kr, e0)[0];
+           if (t2<=0):
+               t2=0;
         proyeccion[i,2]=t1;
         proyeccion[i,3]=t2;
                
