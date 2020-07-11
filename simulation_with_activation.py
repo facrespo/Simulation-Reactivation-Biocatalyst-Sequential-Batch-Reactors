@@ -64,18 +64,21 @@ plt.ylabel('t')
 plt.title('Tiempo de reactivación para búsqueda de energía activación deseada')
 plt.show();
 
+e1 = e0_st[0];
 curva_without_activation=np.zeros((10,2*(nlotes)),dtype=float);
 for i in range(0,7):
     if (i==0):
-        curva_without_activation[0:10,0:4] = reactorbioquim.curva_activada(km, kcat, kd, e0, e0_st[i], e_ref_actividad[i], Si, beta, kr, V0, Mcat, dbeta, i+1, xlimit, t_reactivacion[i+1]);
+        curva_without_activation[0:10,0:4] = reactorbioquim.curva_activada(km, kcat, kd, e0, e0_st[i], e_ref_actividad[i], Si, beta, kr, V0, Mcat, dbeta, i+1, xlimit);
+        e1=e1*np.exp(-kd*curva_without_activation[9,2]);
     else:
-        temp=reactorbioquim.curva_activada(km, kcat, kd, e0, e0_st[i], e_ref_actividad[i], Si, beta, kr, V0, Mcat, dbeta, i+1, xlimit, t_reactivacion[i+1]);
+        temp=reactorbioquim.curva_activada(km, kcat, kd, e0, e0_st[i], e_ref_actividad[i], Si, beta, kr, V0, Mcat, dbeta, i+1, xlimit);
         curva_without_activation[0:10,(2*i+2):(2*i+4)] =temp[0:10,2:4];
+        e1=e1*np.exp(-kd*temp[9,3]);
 
 fich2=open("plot_curve_with_activation.txt","w");
 fich2.write("Point,Xopt,");
 for p in range(0,(nlotes)):
-    fich2.write(",lotes_" +str(p+1) + ", ,");
+    fich2.write(",,lotes_" +str(p+1) + ", ,");
 fich2.write("\n");
 for i in range(0,10):
    for p in range(0,2*(nlotes)):
