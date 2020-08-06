@@ -77,7 +77,6 @@ def reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbe
                betat[i]=0;
         if (e0_st[i-1] >= elimit*e0_st[0]):
            e_ref_actividad[i]=xlimit*e0_st[0]*betat[i];
-           print(e_ref_actividad[i])
            if (i==1):
                t_reaccion[i] = solvereactor(Xopt, Si, km, kcat, kd, e_ref_actividad[i-1]);
            else:
