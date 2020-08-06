@@ -15,16 +15,17 @@ e0=18;
 Si=200;
 nlotes=8;
 beta=0.95;
-kr=0.5;
+kr=0.1;
 V0=1;
 Mcat=1;
 dbeta=0.1;
 xlimit=0.95;
 elimit=0.25;
 
+
 Xopt=0.9;
 
-e0_st, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, Productividad, Productividadr = reactorbioquim.reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit, elimit);
+e0_st, betaf, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, Productividad, Productividadr = reactorbioquim.reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit, elimit);
 
 print('Producto',product);
 print('Productividad reacción',Productividad);
@@ -32,6 +33,7 @@ print('Productividad_especifica_global',Productividadr);
 
 print(e0_st);
 print(Gamma);
+print(betaf);
 print(e_ref_actividad);
 print(t_reaccion);
 print(t_reactivacion);
