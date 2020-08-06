@@ -7,9 +7,9 @@ The reactors are define in the file reactorbioquim.py.
 
 The function reaccionactivada make the case with reactivation, the function reaccion only make a simple reaction.
 
-The example for reactivation is simulacion_with_activation.py.
+The example for reactivation is simulacion_experiment_with_activation.py.
 
-The example for simple case is simulacion_without_activation.py.
+The example for simple case is simulacion_experiment_without_activation.py.
 
 The case with random parameters use the file: simulacion_reactores_reactivada_random.py, this file generate the file to make the analysis.
 
