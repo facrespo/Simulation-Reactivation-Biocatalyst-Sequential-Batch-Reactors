@@ -8,30 +8,30 @@ from sympy import Symbol,nsolve;
 
 import reactorbioquim;
 
-km=10;
-kcat=1;
+K=10;
+k=1;
 kd=0.022;
 e0=18;
 Si=200;
 Xopt=0.9;
 nlotes=6;
 kr=0.5;
-V0=1;
-Mcat=1;
+V=1;
+Mbiocat=1;
 elimit=0.25
 
-e0_st, t_reaccion, product, productivity_specif, Productividad_especifica_global = reactorbioquim.reaccion(km, kcat, kd, e0, Si, Xopt, nlotes, V0, Mcat, elimit);
+efinish, t_reaccion, product, productivity_specif, Productividad_especifica_global = reactorbioquim.inactivity(K, k, kd, e0, Si, Xopt, nlotes, V, Mbiocat, elimit);
 
 print('Producto',product);
 print('Productividad reacción',productivity_specif);
 print('Productividad_especifica_global',Productividad_especifica_global);
 
-print(e0_st);
+print(efinish);
 print(t_reaccion);
 print(product);
 
 x = np.arange(0,nlotes+1,1)
-plt.plot(x,e0_st);
+plt.plot(x,efinish);
 plt.xlabel('lotes')
 plt.title('Actividad Específica')
 plt.show();

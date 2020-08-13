@@ -8,16 +8,16 @@ from sympy import Symbol,nsolve;
 
 import reactorbioquim;
 
-km=10;
-kcat=1;
+K=10;
+k=1;
 kd=0.022;
 e0=18;
 Si=200;
 nlotes=8;
 beta=0.95;
 kr=0.1;
-V0=1;
-Mcat=1;
+V=1;
+Mbiocat=1;
 dbeta=0.1;
 xlimit=0.95;
 elimit=0.25;
@@ -25,28 +25,28 @@ elimit=0.25;
 
 Xopt=0.9;
 
-e0_st, betaf, Gamma, e_ref_actividad, t_reaccion, t_reactivacion, product, Productividad, Productividadr = reactorbioquim.reaccionactivada(km, kcat, kd, e0, Si, Xopt, nlotes, beta, kr, V0, Mcat, dbeta, xlimit, elimit);
+et_activity, betaf, Gamma, e0_activity, t_reaccion, t_reactivacion, product, Productividad, Productividadr = reactorbioquim.reactivity(K, k, kd, e0, Si, Xopt, nlotes, beta, kr, V, Mbiocat, dbeta, xlimit, elimit);
 
 print('Producto',product);
 print('Productividad reacción',Productividad);
 print('Productividad_especifica_global',Productividadr);
 
-print(e0_st);
 print(Gamma);
 print(betaf);
-print(e_ref_actividad);
+print(e0_activity);
+print(et_activity);
 print(t_reaccion);
 print(t_reactivacion);
 
 x = np.arange(0,nlotes+1,1)
-plt.plot(x,e0_st);
+plt.plot(x,et_activity);
 plt.xlabel('lotes')
-plt.title('Actividad Específica')
+plt.title('Actividad Específica en t final')
 plt.show();
 
-plt.plot(x,e_ref_actividad);
+plt.plot(x,e0_activity);
 plt.xlabel('lotes')
-plt.title('Actividad Específica Reactivación')
+plt.title('Actividad Específica Reactivación en t=0')
 plt.show();
 
 plt.plot(x,Gamma);
